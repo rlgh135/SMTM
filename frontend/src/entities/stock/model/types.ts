@@ -15,3 +15,19 @@ export interface StockAnalysis {
   supplyAnalysis: string;
   riskFactors: string[];
 }
+
+export interface StockPrice {
+  date: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+  changeRate: number;
+}
+
+export interface StockPriceWithMA extends StockPrice {
+  ma5?: number;
+  ma20?: number;
+  ma60?: number;
+}

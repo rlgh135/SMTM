@@ -54,3 +54,53 @@ def calculate_macd(
     histogram = macd_line - signal_line
 
     return macd_line, signal_line, histogram
+
+
+def calculate_sma(close: pd.Series, period: int = 20) -> pd.Series:
+    """
+    SMA(Simple Moving Average)를 계산합니다.
+
+    Args:
+        close: 종가 시계열.
+        period: 이동평균 기간.
+
+    Returns:
+        이동평균 시계열.
+    """
+    return close.rolling(window=period, min_periods=period).mean()
+
+
+def calculate_ema(close: pd.Series, period: int = 20) -> pd.Series:
+    """
+    EMA(Exponential Moving Average)를 계산합니다.
+
+    Args:
+        close: 종가 시계열.
+        period: 이동평균 기간.
+
+    Returns:
+        지수 이동평균 시계열.
+    """
+    return close.ewm(span=period, adjust=False).mean()
+
+
+def calculate_bollinger_bands(
+    close: pd.Series, period: int = 20, num_std: float = 2.0
+) -> tuple[pd.Series, pd.Series, pd.Series]:
+    """
+    볼린저 밴드를 계산합니다.
+
+    Args:
+        close: 종가 시계열.
+        period: 이동평균 기간.
+        num_std: 표준편차 배수.
+
+    Returns:
+        (상단 밴드, 중간 밴드, 하단 밴드) 튜플.
+    """
+    middle_band = calculate_sma(close, period)
+    std = close.rolling(window=period, min_periods=period).std()
+    upper_band = middle_band + (std * num_std)
+    lower_band = middle_band - (std * num_std)
+
+    return upper_band, middle_band, lower_band

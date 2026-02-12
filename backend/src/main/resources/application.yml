@@ -29,3 +29,12 @@ logging:
   level:
     com.project.stock: DEBUG
     org.hibernate.SQL: DEBUG
+
+kis:
+  app-key: ${KIS_APP_KEY:}
+  app-secret: ${KIS_APP_SECRET:}
+  base-url: ${KIS_BASE_URL:https://openapi.koreainvestment.com:9443}
+  account-no: ${KIS_ACCOUNT_NO:}
+
+ai-worker:
+  base-url: ${AI_WORKER_URL:http://localhost:8000}
