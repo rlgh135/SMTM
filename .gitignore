@@ -1,0 +1,50 @@
+# ===== Global =====
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+CLAUDE.md
+
+# ===== IDE =====
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# ===== Java / Spring Boot (Backend) =====
+backend/build/
+backend/.gradle/
+backend/out/
+backend/bin/
+backend/gradle/wrapper/gradle-wrapper.jar
+backend/src/main/java/**/Q*.java
+
+# ===== Python / FastAPI (AI Worker) =====
+ai-worker/__pycache__/
+ai-worker/**/__pycache__/
+ai-worker/*.pyc
+ai-worker/.venv/
+ai-worker/venv/
+ai-worker/.mypy_cache/
+ai-worker/.pytest_cache/
+ai-worker/.ruff_cache/
+
+# ===== React / Vite (Frontend) =====
+frontend/node_modules/
+frontend/dist/
+frontend/.cache/
+frontend/*.local
+
+# ===== Docker =====
+docker-compose.override.yml
+
+# ===== Misc =====
+*.bak
+*.orig
