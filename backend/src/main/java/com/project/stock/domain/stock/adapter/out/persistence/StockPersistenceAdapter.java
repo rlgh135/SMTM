@@ -2,10 +2,14 @@ package com.project.stock.domain.stock.adapter.out.persistence;
 
 import com.project.stock.domain.stock.application.port.out.LoadStockPort;
 import com.project.stock.domain.stock.application.port.out.LoadStockPricePort;
+import com.project.stock.domain.stock.application.port.out.LoadWatchlistPort;
+import com.project.stock.domain.stock.application.port.out.SaveAnalysisHistoryPort;
 import com.project.stock.domain.stock.application.port.out.SaveStockPricePort;
 import com.project.stock.domain.stock.domain.Stock;
+import com.project.stock.domain.stock.domain.StockAnalysisHistory;
 import com.project.stock.domain.stock.domain.StockPrice;
 import com.project.stock.domain.stock.domain.StockPriceId;
+import com.project.stock.domain.stock.domain.Watchlist;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,14 +19,16 @@ import java.util.Optional;
 
 /**
  * 주식 영속성 어댑터 (Driven Adapter).
- * Stock 및 StockPrice 데이터 접근을 담당.
+ * Stock, StockPrice, StockAnalysisHistory, Watchlist 데이터 접근을 담당.
  */
 @Component
 @RequiredArgsConstructor
-class StockPersistenceAdapter implements LoadStockPort, LoadStockPricePort, SaveStockPricePort {
+class StockPersistenceAdapter implements LoadStockPort, LoadStockPricePort, SaveStockPricePort, SaveAnalysisHistoryPort, LoadWatchlistPort {
 
     private final StockJpaRepository stockJpaRepository;
     private final StockPriceJpaRepository stockPriceJpaRepository;
+    private final StockAnalysisHistoryJpaRepository analysisHistoryJpaRepository;
+    private final WatchlistJpaRepository watchlistJpaRepository;
 
     @Override
     public Optional<Stock> loadByCode(String stockCode) {
@@ -52,5 +58,20 @@ class StockPersistenceAdapter implements LoadStockPort, LoadStockPricePort, Save
     @Override
     public List<StockPrice> saveAll(List<StockPrice> stockPrices) {
         return stockPriceJpaRepository.saveAll(stockPrices);
+    }
+
+    @Override
+    public StockAnalysisHistory save(StockAnalysisHistory history) {
+        return analysisHistoryJpaRepository.save(history);
+    }
+
+    @Override
+    public Optional<StockAnalysisHistory> findByStockIdAndDate(Long stockId, LocalDate date) {
+        return analysisHistoryJpaRepository.findByStockIdAndAnalyzedDate(stockId, date);
+    }
+
+    @Override
+    public List<Watchlist> findAllActive() {
+        return watchlistJpaRepository.findAllActiveOrderByPriority();
     }
 }

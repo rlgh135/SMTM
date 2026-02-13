@@ -38,3 +38,11 @@ kis:
 
 ai-worker:
   base-url: ${AI_WORKER_URL:http://localhost:8000}
+
+batch:
+  daily-analysis:
+    cron: ${BATCH_CRON:0 0 16 * * MON-FRI}  # 평일 오후 4시 (KST)
+    enabled: ${BATCH_ENABLED:true}
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
