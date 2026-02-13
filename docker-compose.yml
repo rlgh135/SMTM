@@ -1,6 +1,7 @@
-version: '3.8'
-
 services:
+  # ============================================================
+  # PostgreSQL 16 - 주 데이터베이스
+  # ============================================================
   postgres:
     image: postgres:16-alpine
     container_name: krstock-postgres
@@ -12,7 +13,19 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      # 컨테이너 최초 실행 시 스키마 자동 초기화
+      # (ddl-auto: validate 이므로 테이블이 반드시 존재해야 함)
+      - ./DATABASE_SCHEMA.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d krstock"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
+  # ============================================================
+  # Redis 7 - KIS API 토큰 캐싱
+  # ============================================================
   redis:
     image: redis:7-alpine
     container_name: krstock-redis
@@ -20,7 +33,15 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
+  # ============================================================
+  # Spring Boot Backend - 비즈니스 로직 및 REST API
+  # ============================================================
   backend:
     build:
       context: ./backend
@@ -29,14 +50,24 @@ services:
     ports:
       - "8080:8080"
     environment:
+      # 데이터베이스 연결 (서비스명 'postgres'로 컨테이너 DNS 해석)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/krstock
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/krstock
+      # Redis 연결
       REDIS_HOST: redis
+      REDIS_PORT: 6379
+      # AI Worker 연결 (서비스명 'ai-worker'로 컨테이너 DNS 해석)
+      AI_WORKER_URL: http://ai-worker:8000
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
+  # ============================================================
+  # FastAPI AI Worker - 기술적 분석 및 LLM 에이전트
+  # ============================================================
   ai-worker:
     build:
       context: ./ai-worker
@@ -49,13 +80,21 @@ services:
     depends_on:
       - redis
 
+  # ============================================================
+  # React Frontend - Nginx로 정적 파일 서빙
+  # ============================================================
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        # Vite는 빌드 시점에 환경변수를 번들에 포함시킴
+        # 브라우저(호스트)에서 직접 백엔드에 요청하므로 localhost 사용
+        VITE_API_URL: http://localhost:8080/api/v1
     container_name: krstock-frontend
     ports:
-      - "3000:3000"
+      # Nginx가 컨테이너 내부 80 포트로 서빙 → 호스트 3000 포트로 노출
+      - "3000:80"
     depends_on:
       - backend
 

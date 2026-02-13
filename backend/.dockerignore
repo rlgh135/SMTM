@@ -1,0 +1,23 @@
+# Gradle 빌드 캐시 및 산출물 (컨테이너 내부에서 재빌드)
+build/
+.gradle/
+
+# Git 관련
+.git/
+.gitignore
+
+# 테스트 소스 (프로덕션 이미지 불필요)
+src/test/
+
+# 환경 변수 (민감 정보 제외)
+.env
+.env.*
+!.env.example
+
+# 에디터 설정
+.vscode/
+.idea/
+*.DS_Store
+
+# 문서
+*.md

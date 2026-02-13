@@ -1,0 +1,24 @@
+# 빌드 산출물 및 의존성 (컨테이너 내부에서 재설치)
+node_modules/
+dist/
+
+# 환경 변수 (민감 정보 제외)
+.env
+.env.local
+.env.*.local
+
+# Git 관련
+.git/
+.gitignore
+
+# 로그 및 임시 파일
+*.log
+npm-debug.log*
+
+# 에디터 설정
+.vscode/
+.idea/
+*.DS_Store
+
+# 문서
+*.md
