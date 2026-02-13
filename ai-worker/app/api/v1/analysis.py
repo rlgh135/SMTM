@@ -39,7 +39,9 @@ async def analyze_stock(request: AnalysisRequest) -> AnalysisResponse:
         pattern_result = await pattern_service.analyze(request)
 
         # 2. LLM 분석 수행 (투자 추천 생성)
-        llm_result = await pattern_service.llm_service.generate_analysis(pattern_result)
+        llm_result = await pattern_service.llm_service.generate_analysis(
+            pattern_result, request.model_provider
+        )
 
         # 3. 최종 응답 구성
         response = AnalysisResponse(

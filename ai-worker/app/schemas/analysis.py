@@ -13,11 +13,22 @@ class Recommendation(str, Enum):
     HOLD = "HOLD"
 
 
+class ModelProvider(str, Enum):
+    """LLM 프로바이더 유형."""
+    OPENAI = "openai"
+    BEDROCK = "bedrock"
+    GEMINI = "gemini"
+
+
 class AnalysisRequest(BaseModel):
     """분석 요청 DTO."""
 
     stock_code: str = Field(..., description="종목 코드", examples=["005930"])
     lookback_days: int = Field(default=120, description="분석 기간(일)")
+    model_provider: ModelProvider = Field(
+        default=ModelProvider.OPENAI,
+        description="사용할 LLM 프로바이더 (openai / bedrock / gemini)",
+    )
 
 
 class AnalysisResponse(BaseModel):
