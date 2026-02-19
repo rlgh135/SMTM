@@ -36,4 +36,9 @@ public interface StockAnalysisHistoryJpaRepository extends JpaRepository<StockAn
      * 특정 날짜의 모든 분석 결과를 조회합니다.
      */
     List<StockAnalysisHistory> findByAnalyzedDate(LocalDate date);
+
+    /**
+     * 특정 날짜의 분석 이력이 존재하는지 확인합니다.
+     */
+    boolean existsByAnalyzedDate(LocalDate date);
 }

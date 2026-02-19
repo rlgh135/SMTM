@@ -53,6 +53,13 @@ public class DailyAnalysisBatchService {
             return;
         }
 
+        // 오늘 이미 배치가 실행되었는지 확인
+        LocalDate today = LocalDate.now();
+        if (saveAnalysisHistoryPort.existsByAnalyzedDate(today)) {
+            log.info("오늘({}) 이미 배치가 실행되었습니다. 배치 종료.", today);
+            return;
+        }
+
         // 활성화된 관심 종목 조회
         List<Watchlist> activeWatchlist = loadWatchlistPort.findAllActive();
         if (activeWatchlist.isEmpty()) {
@@ -64,7 +71,6 @@ public class DailyAnalysisBatchService {
 
         int successCount = 0;
         int failCount = 0;
-        LocalDate today = LocalDate.now();
 
         // 각 종목에 대해 시세 동기화 및 분석 수행
         for (Watchlist watchlistItem : activeWatchlist) {

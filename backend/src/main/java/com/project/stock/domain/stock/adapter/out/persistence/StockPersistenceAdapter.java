@@ -74,4 +74,19 @@ class StockPersistenceAdapter implements LoadStockPort, LoadStockPricePort, Save
     public List<Watchlist> findAllActive() {
         return watchlistJpaRepository.findAllActiveOrderByPriority();
     }
+
+    @Override
+    public boolean existsByAnalyzedDate(LocalDate date) {
+        return analysisHistoryJpaRepository.existsByAnalyzedDate(date);
+    }
+
+    @Override
+    public long count() {
+        return analysisHistoryJpaRepository.count();
+    }
+
+    @Override
+    public List<StockAnalysisHistory> findByAnalyzedDate(LocalDate date) {
+        return analysisHistoryJpaRepository.findByAnalyzedDate(date);
+    }
 }

@@ -57,7 +57,8 @@ public class KisTokenManager {
         requestBody.put("appsecret", kisProperties.getAppSecret());
 
         KisTokenResponse response = webClient.post()
-            .uri("/oauth2/tokenP")
+            .uri("/oauth2/token")
+            .header("Content-Type", "application/json")
             .bodyValue(requestBody)
             .retrieve()
             .bodyToMono(KisTokenResponse.class)

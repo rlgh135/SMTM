@@ -49,6 +49,8 @@ services:
     container_name: krstock-backend
     ports:
       - "8080:8080"
+    env_file:
+      - ./backend/.env
     environment:
       # 데이터베이스 연결 (서비스명 'postgres'로 컨테이너 DNS 해석)
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/krstock
@@ -59,6 +61,8 @@ services:
       REDIS_PORT: 6379
       # AI Worker 연결 (서비스명 'ai-worker'로 컨테이너 DNS 해석)
       AI_WORKER_URL: http://ai-worker:8000
+      # 배치 비활성화 (KIS API 문제로 인한 임시 조치)
+      BATCH_ENABLED: false
     depends_on:
       postgres:
         condition: service_healthy
